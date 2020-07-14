@@ -1,24 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
+import ShowPage from './components/ShowPage'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import TopNav from './components/TopNav'
+import SideNav from './components/SideNav'
+import bootstrap from 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 function App() {
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <SideNav />
+      <TopNav />
+    <Router>
+      <Route exact path='/videos/:id' render={() => <ShowPage />} />
+    </Router>
     </div>
   );
 }
