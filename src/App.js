@@ -48,7 +48,7 @@ class App extends React.Component {
     <div className='main'>
     <Row>
       <Col>
-    <TopNav loginUser={this.loginUser} registerUser={this.registerUser} logoutUser={this.logoutUser} />
+    <TopNav currentUser={this.state.currentUser} updateUser={this.updateUser} logoutUser={this.logoutUser} />
       </Col>
     </Row>
     <Row>

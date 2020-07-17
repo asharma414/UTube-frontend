@@ -39,18 +39,22 @@ export default class TopNav extends Component {
                 "Accept": "application/json"
             },
             body: JSON.stringify({
-                first_name: this.state.firstName,
-                last_name: this.state.lastName,
-                dob: this.state.dob.toLocaleString(),
-                country: this.state.country,
-                username: this.state.username,
-                password: this.state.password,
+                user: {
+                    first_name: this.state.firstName,
+                    last_name: this.state.lastName,
+                    dob: this.state.dob,
+                    country: this.state.country,
+                    username: this.state.username,
+                    password: this.state.password,
+                    password_confirmation: this.state.confirmPassword
+                }
             })
         }).then(res => res.json())
             .then(data => {
                 if (data.error) {
                     alert(data.message)
                 } else {
+                    this.handleClose('registerShow')
                     alert('You have been registered!')
                 }
             })
@@ -65,7 +69,7 @@ export default class TopNav extends Component {
                 "Accept": "application/json"
             },
             body: JSON.stringify({
-                username: this.state.username,
+                username: this.state.loginUsername,
                 password: this.state.loginPassword
             })
         }).then(res => res.json())
@@ -75,6 +79,7 @@ export default class TopNav extends Component {
                 } else {
                     localStorage.setItem('jwt', data.token)
                     this.props.updateUser(data.user_data)
+                    this.handleClose('loginShow')
                 }
             })
     };
@@ -89,9 +94,9 @@ export default class TopNav extends Component {
                         <Nav className="mr-auto">
                             <Nav.Link href="/home">Home</Nav.Link>
                             <Nav.Link href="/link">Link</Nav.Link>
-                            <Nav.Link onClick={() => this.handleShow('loginShow')}>Login</Nav.Link>
-                            <Nav.Link onClick={() => this.handleShow('registerShow')}>Register</Nav.Link>
-                            <Nav.Link onClick={() => this.props.logoutUser()}>Logout</Nav.Link>
+                            {!this.props.currentUser ? <Nav.Link onClick={() => this.handleShow('loginShow')}>Login</Nav.Link> : null}
+                            {!this.props.currentUser ? <Nav.Link onClick={() => this.handleShow('registerShow')}>Register</Nav.Link> : null}
+        {this.props.currentUser ? <Nav.Link onClick={() => this.props.logoutUser()}>Logout, {this.props.currentUser.first_name}</Nav.Link> : null}
                         </Nav>
                         <Form inline>
                             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
