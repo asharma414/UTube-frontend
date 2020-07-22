@@ -10,3 +10,15 @@
 #root {
     color: white;
 }
+
+.duration {
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+}
+
+.thumbnail {
+  position: relative;
+  text-align: center;
+  color: white;
+}
