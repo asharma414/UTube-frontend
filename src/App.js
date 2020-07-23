@@ -15,10 +15,13 @@ class App extends React.Component {
 
   state = {
     currentUser: null,
-    videos: []
+    videos: [],
+    genres: []
   }
 
   componentDidMount() {
+    this.fetchVideos()
+    this.fetchGenres()
     if (localStorage.getItem("jwt")) {
       fetch("http://localhost:3000/token", {
         method: "GET",
@@ -29,7 +32,6 @@ class App extends React.Component {
         .then(res => res.json())
         .then(data => {
           this.updateUser(data)
-          this.fetchVideos()
         })
     }
     //check if there is token in localStorage
@@ -41,6 +43,59 @@ class App extends React.Component {
     fetch('http://localhost:3000/videos')
     .then(res => res.json())
     .then(data => this.setState({videos: data}))
+  }
+
+  fetchGenres = () => {
+    fetch('http://localhost:3000/genres')
+      .then(res => res.json())
+      .then(genres => this.setState({ genres: genres }))
+  }
+
+  subscribe = (id) => {
+    if (this.state.currentUser) {
+      fetch('http://localhost:3000/subscriptions', {
+        method: 'POST',
+        headers: {
+          "Authentication": localStorage.getItem("jwt"),
+          'Content-type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({subscribee_id: id})
+      })
+      .then(res => res.json())
+      .then(data => {
+        let newSub = [...this.state.currentUser.subscribees, data]
+        let currentUser = {...this.state.currentUser}
+        currentUser.subscribees = newSub
+        this.setState({currentUser: currentUser})
+      })
+   }
+  }
+
+  unsubscribe = (id) => {
+    if (this.state.currentUser) {
+      fetch(`http://localhost:3000/subscriptions/${id}`, {
+        method: 'DELETE',
+        headers: {
+          "Authentication": localStorage.getItem("jwt"),
+          'Content-type': 'application/json',
+          Accept: 'application/json'
+        },
+      })
+      .then(res => res.json())
+      .then(data => {
+        let filteredArr = [...this.state.currentUser.subscribees].filter(subscribee => subscribee.id !== data.subscribee_id)
+        let currentUser = {...this.state.currentUser}
+        currentUser.subscribees = filteredArr
+        this.setState({currentUser: currentUser})
+      })
+    }
+  }
+
+  subscribed = (id) => {
+    if (this.state.currentUser) {
+      return this.state.currentUser.subscribees.find(subscribee => subscribee.id === id)
+    }
   }
 
   logoutUser = () => {
@@ -69,8 +124,8 @@ class App extends React.Component {
       <br />
       <Switch>
         <Route exact path='/' render={() => <ResultsPage results={this.state.videos} />} />
-        <Route exact path='/videos/:id' render={() => <ShowPage />} />
-        <Route exact path='/upload' render={() => <Uploader currentUser={this.state.currentUser} />} />
+        <Route exact path='/videos/:id' render={() => <ShowPage currentUser={this.state.currentUser} subscribe={this.subscribe} subscribed={this.subscribed} unsubscribe={this.unsubscribe} />} />
+        <Route exact path='/upload' render={() => <Uploader currentUser={this.state.currentUser} genres={this.state.genres} />} />
         <Route render={() => <Page404 />} />
       </Switch>
     </Router>

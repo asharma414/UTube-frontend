@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Card, Image, Icon, Container } from 'semantic-ui-react'
+import { Card } from 'semantic-ui-react'
 
 
 class ResultsPage extends Component {
@@ -26,7 +26,6 @@ class ResultsPage extends Component {
                                 </Card.Description>
                             </Card.Content>
                             <Card.Content extra>
-                                
                         <a>{result.user.username}</a>
                             </Card.Content>
                         </Card>

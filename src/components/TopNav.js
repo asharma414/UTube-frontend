@@ -93,7 +93,7 @@ export default class TopNav extends Component {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
                             <Nav.Link href="/">Home</Nav.Link>
-                            <Nav.Link href="/link">Link</Nav.Link>
+                            <Nav.Link href="/upload">Upload</Nav.Link>
                             {!this.props.currentUser ? <Nav.Link onClick={() => this.handleShow('loginShow')}>Login</Nav.Link> : null}
                             {!this.props.currentUser ? <Nav.Link onClick={() => this.handleShow('registerShow')}>Register</Nav.Link> : null}
         {this.props.currentUser ? <Nav.Link onClick={() => this.props.logoutUser()}>Logout, {this.props.currentUser.first_name}</Nav.Link> : null}

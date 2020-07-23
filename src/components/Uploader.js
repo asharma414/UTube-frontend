@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Form, Button, ProgressBar } from 'react-bootstrap'
-import ActiveStorageProvider from 'react-activestorage-provider'
 import axios from 'axios'
 
 
@@ -14,6 +13,9 @@ export default class Uploader extends Component {
         thumbnail: null,
         thumbnailName: '',
         private: false,
+        genre: '',
+        vidKey: 1,
+        imgKey: 2,
         uploadPercentage: 0
     }
 
@@ -33,7 +35,8 @@ export default class Uploader extends Component {
         formData.append('video[title]', this.state.title)
         formData.append('video[description]', this.state.description)
         formData.append('video[user_id]', this.props.currentUser.id)
-        formData.append('video[public]', this.state.private)
+        formData.append('video[public]', !this.state.private)
+        formData.append('video[genre_id', this.state.genre)
         formData.append('video[clip]', this.state.clip)
         formData.append('video[thumbnail]', this.state.thumbnail)
         const res = await axios.post('http://localhost:3000/videos', formData, {
@@ -44,13 +47,17 @@ export default class Uploader extends Component {
                 this.setState({uploadPercentage: parseInt(Math.round(progressEvent.loaded * 100) / progressEvent.total)})
             }
         })
-        this.setState({clip: null, clipName: '', title: '', description: '', thumbnail: null, thumbnailName: null, private: false, uploadPercentage: 0})
+        this.setState({clip: null, clipName: '', title: '', description: '', genre: '', thumbnail: null, vidKey: this.state.vidKey+1, imgKey: this.state.imgKey+1, thumbnailName: null, private: false, uploadPercentage: 0})
         alert('Your video has been uploaded!')
     }
 
     render() {
+        if (!this.props.currentUser) {
+            return (
+                <div>Please Login To Upload Videos!</div>
+            )
+        } else {
         return (
-
             <div className='container'>
                 <Form onSubmit={this.onSubmit}>
                     <Form.Group controlId='title'>
@@ -63,11 +70,18 @@ export default class Uploader extends Component {
                     </Form.Group>
                     <Form.Group controlId='clip'>
                         <Form.Label>Choose Video</Form.Label>
-                        <Form.Control type='file' onChange={this.onChange} />
+                        <Form.Control key={this.state.vidKey} type='file' onChange={this.onChange} />
                     </Form.Group>
                     <Form.Group controlId='thumbnail'>
                         <Form.Label>Choose Thumbnail</Form.Label>
-                        <Form.Control type='file' onChange={this.onChange} />
+                        <Form.Control key={this.state.imgKey} type='file' onChange={this.onChange} />
+                    </Form.Group>
+                    <Form.Group controlId='genre'>
+                        <Form.Label>Genre</Form.Label>
+                        <Form.Control required value={this.state.genre} onChange={this.onChange} as='select'>
+                        <option>Select Genre</option>
+                        {this.props.genres.map(genre => <option key={genre.name+genre.id} value={genre.id}>{genre.name}</option>)}
+                        </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="private">
                         <Form.Check checked={this.state.private} onChange={this.onChange} type="checkbox" label="Private" />
@@ -75,52 +89,10 @@ export default class Uploader extends Component {
                     <Button variant="primary" type="submit">Upload</Button>
                 </Form>
                 <br />
+                <span>{this.state.uploadPercentage}%</span>
                 <ProgressBar animated now={this.state.uploadPercentage} />
             </div>
         )
+        }
     }
 }
-
-
-
-//          <ActiveStorageProvider
-            //     endpoint={{
-            //         path: '/videos',
-            //         model: 'Video',
-            //         attribute: 'clip',
-            //         method: 'PUT',
-            //     }}
-            //     onSubmit={video => this.setState({ video: video })}
-            //     render={({ handleUpload, uploads, ready }) => (
-            //         <div>
-            //             <input
-            //                 type="file"
-            //                 disabled={!ready}
-            //                 onChange={e => handleUpload(e.currentTarget.files)}
-            //             />
-
-            //             {uploads.map(upload => {
-            //                 switch (upload.state) {
-            //                     case 'waiting':
-            //                         return <p key={upload.id}>Waiting to upload {upload.file.name}</p>
-            //                     case 'uploading':
-            //                         return (
-            //                             <p key={upload.id}>
-            //                                 Uploading {upload.file.name}: {upload.progress}%
-            //                             </p>
-            //                         )
-            //                     case 'error':
-            //                         return (
-            //                             <p key={upload.id}>
-            //                                 Error uploading {upload.file.name}: {upload.error}
-            //                             </p>
-            //                         )
-            //                     case 'finished':
-            //                         return (
-            //                             <p key={upload.id}>Finished uploading {upload.file.name}</p>
-            //                         )
-            //                 }
-            //             })}
-            //         </div>
-            //     )}
-            // />
