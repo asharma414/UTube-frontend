@@ -8,7 +8,7 @@ render() {
         <Navbar variant='dark' bg='dark'>
             <Nav>
                 <ul>
-                    <Nav.Link>test</Nav.Link>
+                    <Nav.Link onClick={this.props.subscriptionFeed}>Subscriptions</Nav.Link>
                     <Nav.Link>test</Nav.Link>
                 </ul>
             </Nav>

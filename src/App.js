@@ -51,6 +51,17 @@ class App extends React.Component {
       .then(genres => this.setState({ genres: genres }))
   }
 
+  subscriptionFeed = () => {
+    fetch("http://localhost:3000/feed/subscriptions", {
+      method: "GET",
+      headers: {
+        "Authentication": localStorage.getItem("jwt")
+      }
+    })
+    .then(res => res.json())
+    .then(videos => this.setState({videos: videos}))
+  }
+
   subscribe = (id) => {
     if (this.state.currentUser) {
       fetch('http://localhost:3000/subscriptions', {
@@ -117,7 +128,7 @@ class App extends React.Component {
     </Row>
     <Row>
       <Col lg={2} className='sidebar'>
-      <SideNav />
+      <SideNav subscriptionFeed={this.subscriptionFeed} />
       </Col>
       <Col>
     <Router>

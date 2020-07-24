@@ -22,3 +22,30 @@
   text-align: center;
   color: white;
 }
+
+.likes-bar {
+  height: 2px;
+  color:#414042;
+}
+
+  .like-bar, .dislike-bar {
+    display: inline-block;
+    height: 5px;
+    padding: 2px;
+  }
+
+  .like-bar {
+    float: left;
+    width: 50%;
+    background: #F7B334;
+  }
+
+  .dislike-bar {
+    float: right;
+    width: 50%;
+    background: #A7A9AC;
+  }
+
+  i {
+    cursor: pointer;
+  }
