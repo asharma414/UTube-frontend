@@ -39,7 +39,7 @@ export default class Uploader extends Component {
         formData.append('video[genre_id', this.state.genre)
         formData.append('video[clip]', this.state.clip)
         formData.append('video[thumbnail]', this.state.thumbnail)
-        const res = await axios.post('http://localhost:3000/videos', formData, {
+        await axios.post('http://localhost:3000/videos', formData, {
             headers: {
                 'Content-type': 'multipart/form-data'
             },

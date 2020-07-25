@@ -52,14 +52,29 @@ class App extends React.Component {
   }
 
   subscriptionFeed = () => {
-    fetch("http://localhost:3000/feed/subscriptions", {
-      method: "GET",
-      headers: {
-        "Authentication": localStorage.getItem("jwt")
-      }
-    })
-    .then(res => res.json())
-    .then(videos => this.setState({videos: videos}))
+    if (this.state.currentUser) {
+      fetch("http://localhost:3000/feed/subscriptions", {
+        method: "GET",
+        headers: {
+          "Authentication": localStorage.getItem("jwt")
+        }
+      })
+      .then(res => res.json())
+      .then(videos => this.setState({videos: videos}))
+    }
+  }
+
+  likedFeed = () => {
+    if (this.state.currentUser) {
+      fetch("http://localhost:3000/feed/liked", {
+        method: "GET",
+        headers: {
+          "Authentication": localStorage.getItem("jwt")
+        }
+      })
+        .then(res => res.json())
+        .then(videos => this.setState({ videos: videos }))
+    }
   }
 
   subscribe = (id) => {
@@ -121,6 +136,7 @@ class App extends React.Component {
   render() {
   return (
     <div className='main'>
+      <Router>
     <Row>
       <Col>
     <TopNav currentUser={this.state.currentUser} updateUser={this.updateUser} logoutUser={this.logoutUser} />
@@ -128,10 +144,9 @@ class App extends React.Component {
     </Row>
     <Row>
       <Col lg={2} className='sidebar'>
-      <SideNav subscriptionFeed={this.subscriptionFeed} />
+      <SideNav subscriptionFeed={this.subscriptionFeed} likedFeed={this.likedFeed} />
       </Col>
       <Col>
-    <Router>
       <br />
       <Switch>
         <Route exact path='/' render={() => <ResultsPage results={this.state.videos} />} />
@@ -139,9 +154,9 @@ class App extends React.Component {
         <Route exact path='/upload' render={() => <Uploader currentUser={this.state.currentUser} genres={this.state.genres} />} />
         <Route render={() => <Page404 />} />
       </Switch>
-    </Router>
       </Col>
     </Row>
+      </Router>
     </div>
   );
   }

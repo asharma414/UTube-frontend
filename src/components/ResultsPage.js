@@ -14,7 +14,7 @@ class ResultsPage extends Component {
             <div>
                 <Card.Group>
                     {this.props.results.map(result =>
-                        <Card style={{color: 'black'}}>
+                        <Card style={{color: 'black', cursor: 'pointer'}}>
                             <div className='thumbnail'>
                                 <img style={{width: '100%', height: '100%'}} src={result.thumbnail.url} wrapped ui={false} onClick={() => this.props.history.push(`/videos/${result.id}`)} />
                                 <div className='duration'>{this.fmtMSS(result.duration.toFixed(0))}</div>

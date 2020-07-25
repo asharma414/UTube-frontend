@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, Form, FormControl, Button, Modal } from 'react-bootstrap'
+import { withRouter } from 'react-router-dom'
 
 
-export default class TopNav extends Component {
+class TopNav extends Component {
 
     state = {
         loginShow: false,
@@ -54,6 +55,7 @@ export default class TopNav extends Component {
                 if (data.error) {
                     alert(data.message)
                 } else {
+                    this.setState({username: '', dob: '', firstName: '', lastName: '', country: '', password: '', confirmPassword: ''})
                     this.handleClose('registerShow')
                     alert('You have been registered!')
                 }
@@ -79,6 +81,7 @@ export default class TopNav extends Component {
                 } else {
                     localStorage.setItem('jwt', data.token)
                     this.props.updateUser(data.user_data)
+                    this.setState({loginUsername: '', loginPassword: ''})
                     this.handleClose('loginShow')
                 }
             })
@@ -418,3 +421,5 @@ export default class TopNav extends Component {
         )
     }
 }
+
+export default withRouter(TopNav)

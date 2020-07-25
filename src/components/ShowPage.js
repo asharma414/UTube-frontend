@@ -14,6 +14,7 @@ class ShowPage extends Component {
         user_id: null,
         genre: null,
         likeCount: null,
+        like: null,
         dislikeCount: null,
         clip_url: null,
         thumbnail_url: null
@@ -21,6 +22,7 @@ class ShowPage extends Component {
 
     like = () => {
         if (this.props.currentUser) {
+            if (!this.state.like) {
             fetch('http://localhost:3000/likes', {
                 method: 'POST',
                 headers: {
@@ -32,32 +34,77 @@ class ShowPage extends Component {
                     video_id: this.state.video_id,
                     dislike: false
                 })
-            }).then(res => {
-                if (res.ok === true) {
-                    this.setState({likeCount: this.state.likeCount+1})
-                }
-            })
-        }
-    }
-
-    dislike = () => {
-        if (this.props.currentUser) {
-            fetch('http://localhost:3000/likes', {
-                method: 'POST',
+            }).then(res => res.json())
+            .then(data =>this.setState({like: data, likeCount: this.state.likeCount + 1}))
+        } else if (this.state.like.dislike === false) {
+            fetch(`http://localhost:3000/likes/${this.state.like.id}`, {
+                method: 'DELETE',
                 headers: {
                     "Authentication": localStorage.getItem("jwt"),
                     'Content-type': 'application/json',
                     Accept: 'application/json'
-                },
-                body: JSON.stringify({
-                    video_id: this.state.video_id,
-                    dislike: true
-                })
+                }
             }).then(res => {
                 if (res.ok === true) {
-                    this.setState({ dislikeCount: this.state.dislikeCount + 1 })
+                    this.setState({ like: null, likeCount: this.state.likeCount - 1 })
                 }
             })
+        } else {
+            fetch(`http://localhost:3000/likes/${this.state.like.id}`, {
+                method: 'PATCH',
+                headers: {
+                    "Authentication": localStorage.getItem("jwt"),
+                    'Content-type': 'application/json',
+                    Accept: 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(like => this.setState({like: like, likeCount: this.state.likeCount + 1, dislikeCount: this.state.dislikeCount - 1}))
+        }
+    }
+    }
+
+    dislike = () => {
+        if (this.props.currentUser) {
+            if (!this.state.like) {
+                fetch('http://localhost:3000/likes', {
+                    method: 'POST',
+                    headers: {
+                        "Authentication": localStorage.getItem("jwt"),
+                        'Content-type': 'application/json',
+                        Accept: 'application/json'
+                    },
+                    body: JSON.stringify({
+                        video_id: this.state.video_id,
+                        dislike: true
+                    })
+                }).then(res => res.json())
+                    .then(data => this.setState({ like: data, dislikeCount: this.state.dislikeCount + 1 }))
+            } else if (this.state.like.dislike === true) {
+                fetch(`http://localhost:3000/likes/${this.state.like.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        "Authentication": localStorage.getItem("jwt"),
+                        'Content-type': 'application/json',
+                        Accept: 'application/json'
+                    }
+                }).then(res => {
+                    if (res.ok === true) {
+                        this.setState({ like: null, dislikeCount: this.state.dislikeCount - 1 })
+                    }
+                })
+            } else {
+                fetch(`http://localhost:3000/likes/${this.state.like.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        "Authentication": localStorage.getItem("jwt"),
+                        'Content-type': 'application/json',
+                        Accept: 'application/json'
+                    }
+                })
+                    .then(res => res.json())
+                    .then(like => this.setState({ like: like, likeCount: this.state.likeCount - 1, dislikeCount: this.state.dislikeCount + 1 }))
+            }
         }
     }
 
@@ -73,7 +120,7 @@ class ShowPage extends Component {
                     }
                 })
                 .then(res => res.json())
-                .then(data => {this.setState({liked: data.liked, video_id: vid.id, title: vid.title, description: vid.description, clip_url: vid.clip.url, thumbnail_url: vid.thumbnail.url, poster: vid.user.username, subCount: vid.user.subscriber_count, user_id: vid.user_id, genre: vid.genre.name, likeCount: vid.like_count, dislikeCount: vid.dislike_count })
+                .then(data => {this.setState({like: data, video_id: vid.id, title: vid.title, description: vid.description, clip_url: vid.clip.url, thumbnail_url: vid.thumbnail.url, poster: vid.user.username, subCount: vid.user.subscriber_count, user_id: vid.user_id, genre: vid.genre.name, likeCount: vid.like_count, dislikeCount: vid.dislike_count })
                 })
             })
     }
