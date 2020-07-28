@@ -1,39 +1,39 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Card } from 'semantic-ui-react'
+import { Card, Dimmer, Loader } from 'semantic-ui-react'
+import VideoCard from './VideoCard'
 
 
 class ResultsPage extends Component {
 
-    //turn seconds to formatted duration
-    fmtMSS(s) { return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s }
+    componentDidMount() {
+        this.defaultFeed()
+    }
 
+    defaultFeed = () => {
+        this.props.fetchVideos()
+    }
 
     render() {
+        if (this.props.results.length > 0) {
+            return (
+                    <Card.Group>
+                        {this.props.results.map(result =>
+                            <VideoCard result={result} />
+                        )}
+                    </Card.Group>
+            )
+        } else if (this.props.loading) {
         return (
-            <div>
-                <Card.Group>
-                    {this.props.results.map(result =>
-                        <Card style={{color: 'black', cursor: 'pointer'}}>
-                            <div className='thumbnail'>
-                                <img style={{width: '100%', height: '100%'}} src={result.thumbnail.url} wrapped ui={false} onClick={() => this.props.history.push(`/videos/${result.id}`)} />
-                                <div className='duration'>{this.fmtMSS(result.duration.toFixed(0))}</div>
-                            </div>
-                            <Card.Content onClick={() => this.props.history.push(`/videos/${result.id}`)}>
-                                <Card.Header>{result.title}</Card.Header>
-                                <Card.Description>
-                                   {result.description.substring(0, 25)}
-                                </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                        <a>{result.user.username}</a>
-                            </Card.Content>
-                        </Card>
-                    )}
-                </Card.Group>
-            </div>
+            <Dimmer active>
+                <Loader>Loading</Loader>
+            </Dimmer>
         )
-    }
+        } else {
+            return (
+                <div>No Results Found</div>
+            )
+        }
 }
-
+}
 export default withRouter(ResultsPage)

@@ -6,6 +6,7 @@ import SideNav from './components/SideNav'
 import Uploader from './components/Uploader'
 import Page404 from './components/404Page'
 import ResultsPage from './components/ResultsPage'
+import ChannelPage from './components/ChannelPage'
 import bootstrap from 'bootstrap/dist/css/bootstrap.min.css';
 import {Row, Col} from 'react-bootstrap'
 import './App.css';
@@ -15,12 +16,13 @@ class App extends React.Component {
 
   state = {
     currentUser: null,
+    currentFeed: null,
     videos: [],
+    loading: false,
     genres: []
   }
 
   componentDidMount() {
-    this.fetchVideos()
     this.fetchGenres()
     if (localStorage.getItem("jwt")) {
       fetch("http://localhost:3000/token", {
@@ -40,9 +42,10 @@ class App extends React.Component {
   }
 
   fetchVideos = () => {
+    this.setState({loading: true})
     fetch('http://localhost:3000/videos')
     .then(res => res.json())
-    .then(data => this.setState({videos: data}))
+    .then(data => this.setState({videos: data, loading: false}))
   }
 
   fetchGenres = () => {
@@ -53,6 +56,7 @@ class App extends React.Component {
 
   subscriptionFeed = () => {
     if (this.state.currentUser) {
+      this.setState({loading: true})
       fetch("http://localhost:3000/feed/subscriptions", {
         method: "GET",
         headers: {
@@ -60,12 +64,32 @@ class App extends React.Component {
         }
       })
       .then(res => res.json())
-      .then(videos => this.setState({videos: videos}))
+      .then(videos => this.setState({videos: videos, loading: false}))
     }
+  }
+
+  searchResults = (e, term) => {
+    e.preventDefault()
+    this.setState({loading: true})
+    fetch(`http://localhost:3000/videos?query=${term}`)
+    .then(res => res.json())
+    .then(videos => this.setState({videos: videos, loading: false}))
+  }
+
+  channelFeed = id => {
+    fetch(`http://localhost:3000/feed/${id}`, {
+      method: 'GET',
+      headers: {
+        "Authentication": localStorage.getItem("jwt")
+      }
+    })
+    .then(res => res.json())
+    .then(videos => this.setState({videos: videos}))
   }
 
   likedFeed = () => {
     if (this.state.currentUser) {
+      this.setState({loading: true})
       fetch("http://localhost:3000/feed/liked", {
         method: "GET",
         headers: {
@@ -73,7 +97,7 @@ class App extends React.Component {
         }
       })
         .then(res => res.json())
-        .then(videos => this.setState({ videos: videos }))
+        .then(videos => this.setState({ videos: videos, loading: false }))
     }
   }
 
@@ -139,19 +163,20 @@ class App extends React.Component {
       <Router>
     <Row>
       <Col>
-    <TopNav currentUser={this.state.currentUser} updateUser={this.updateUser} logoutUser={this.logoutUser} />
+    <TopNav searchSubmit={this.searchResults} currentUser={this.state.currentUser} updateUser={this.updateUser} logoutUser={this.logoutUser} />
       </Col>
     </Row>
     <Row>
       <Col lg={2} className='sidebar'>
-      <SideNav subscriptionFeed={this.subscriptionFeed} likedFeed={this.likedFeed} />
+      <SideNav subscriptionFeed={this.subscriptionFeed} currentUser={this.state.currentUser} likedFeed={this.likedFeed} />
       </Col>
       <Col>
       <br />
       <Switch>
-        <Route exact path='/' render={() => <ResultsPage results={this.state.videos} />} />
+        <Route exact path='/' render={() => <ResultsPage loading={this.state.loading} results={this.state.videos} channelFeed={this.channelFeed} fetchVideos={this.fetchVideos} />} />
         <Route exact path='/videos/:id' render={() => <ShowPage currentUser={this.state.currentUser} subscribe={this.subscribe} subscribed={this.subscribed} unsubscribe={this.unsubscribe} />} />
         <Route exact path='/upload' render={() => <Uploader currentUser={this.state.currentUser} genres={this.state.genres} />} />
+        <Route exact path='/channels/:id' render={() => <ChannelPage loading={this.state.loading} results={this.state.videos} channelFeed={this.channelFeed} subscribe={this.subscribe} subscribed={this.subscribed} unsubscribe={this.unsubscribe} />} />
         <Route render={() => <Page404 />} />
       </Switch>
       </Col>

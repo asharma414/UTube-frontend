@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom'
 class TopNav extends Component {
 
     state = {
+        query: '',
         loginShow: false,
         registerShow: false,
         loginUsername: '',
@@ -101,9 +102,11 @@ class TopNav extends Component {
                             {!this.props.currentUser ? <Nav.Link onClick={() => this.handleShow('registerShow')}>Register</Nav.Link> : null}
         {this.props.currentUser ? <Nav.Link onClick={() => this.props.logoutUser()}>Logout, {this.props.currentUser.first_name}</Nav.Link> : null}
                         </Nav>
-                        <Form inline>
-                            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                            <Button variant="outline-success">Search</Button>
+                        <Form inline onSubmit={(e) => this.props.searchSubmit(e, this.state.query)}>
+                            <Form.Group controlId='query'>
+                                <FormControl value={this.state.query} onChange={this.formChange} type="text" placeholder="Search" className="mr-sm-2" />
+                                <Button variant="outline-success">Search</Button>
+                            </Form.Group>
                         </Form>
                     </Navbar.Collapse>
                 </Navbar>

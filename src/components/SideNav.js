@@ -9,9 +9,15 @@ render() {
         <Navbar variant='dark' bg='dark'>
             <Nav>
                 <ul>
-                    <Nav.Link onClick={() => {this.props.history.push('/'); this.props.subscriptionFeed()}}>Subscriptions</Nav.Link>
-                    <Nav.Link onClick={() => { this.props.history.push('/'); this.props.likedFeed() }}>Liked</Nav.Link>
-                </ul>
+                    {this.props.currentUser ?
+                    <> 
+                        <Nav.Link onClick={() => {this.props.history.push('/'); this.props.subscriptionFeed()}}>Subscriptions</Nav.Link>
+                        <Nav.Link onClick={() => { this.props.history.push('/'); this.props.likedFeed() }}>Liked</Nav.Link>
+                    </>
+                    :
+                    null
+                    }
+                    </ul>
             </Nav>
         </Navbar>
     );
