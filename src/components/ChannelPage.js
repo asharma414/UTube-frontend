@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import {Jumbotron, Button} from 'react-bootstrap'
+import {Jumbotron, Button, Container} from 'react-bootstrap'
 import { Card, Dimmer, Loader } from 'semantic-ui-react'
 import VideoCard from './VideoCard'
 
@@ -39,6 +39,7 @@ class ChannelPage extends Component {
         } else if (this.props.results.length > 0) {
                 return (
                     <div>
+                        <Container>
                         <Jumbotron style={{ background: 'white', color: 'black' }}>
                             <h1>Welcome to {username}'s Channel!</h1>
                             {this.props.subscribed(user_id) ?
@@ -47,6 +48,7 @@ class ChannelPage extends Component {
                                 <Button variant='danger' onClick={() => this.props.subscribe(user_id)}>Subscribe</Button>}
                             <span>   {this.state.subCount} subscribers</span>
                         </Jumbotron>
+                        </Container>
                         <Card.Group>
                             {this.props.results.map(result =>
                                 <VideoCard result={result} />

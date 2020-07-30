@@ -100,7 +100,7 @@ class ShowPage extends Component {
                         })
                     })
                     .then(res => res.json())
-                    .then(this.setState({viewed: true}))
+                    .then(this.setState({viewed: true, viewCount: this.state.viewCount + 1}))
                 } else {
                     fetch('http://localhost:3000/views', {
                         method: 'POST',
@@ -210,10 +210,10 @@ class ShowPage extends Component {
         return (
             <>
             <Row>
-            <ReactPlayer onEnded={this.onEnded} onProgress={this.onProgress} url={this.state.clip_url} controls={true} />
+                <ReactPlayer onEnded={this.onEnded} onProgress={this.onProgress} url={this.state.clip_url} controls={true} />
             </Row>
             <Row>
-                <Col lg={7}>
+                <Col lg={7} className='mt-2'>
                     <h2>{this.state.title}</h2>
                 </Col>
             </Row>
@@ -242,8 +242,26 @@ class ShowPage extends Component {
                          </Col>
                         </Row>
                         <div className="likes-bar">
-                            <span style={{width: (this.state.likeCount / (this.state.likeCount + this.state.dislikeCount)*100) + '%'}} className="like-bar"></span>
-                            <span style={{ width: (this.state.dislikeCount / (this.state.likeCount + this.state.dislikeCount) * 100) + '%'}} className="dislike-bar"></span>
+                            {this.state.likeCount === 0 && this.state.dislikeCount === 0 ?
+                                <>
+                                    <span
+                                        style={{ width: '50%' }}
+                                        className="like-bar"></span>
+                                    <span
+                                        style={{ width: '50%' }}
+                                        className="dislike-bar"></span>
+                                </>
+                                :
+                                <>
+                                    {(this.state.likeCount / (this.state.likeCount + this.state.dislikeCount) * 100) === 0 ? null : <span
+                                        style={{ width: (this.state.likeCount / (this.state.likeCount + this.state.dislikeCount) * 100) + '%' }}
+                                        className="like-bar"></span>}
+                                    
+                                    {(this.state.dislikeCount / (this.state.likeCount + this.state.dislikeCount) * 100) === 0 ? null: <span 
+                                    style={{ width: (this.state.dislikeCount / (this.state.likeCount + this.state.dislikeCount) * 100) + '%'}} 
+                                    className="dislike-bar"></span>}
+                                </>
+                            }
                         </div>
                 </Col>
             </Row>

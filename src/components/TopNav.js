@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, Form, FormControl, Button, Modal } from 'react-bootstrap'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 
 
 class TopNav extends Component {
@@ -78,20 +78,20 @@ class TopNav extends Component {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
-                            <Nav.Link href="/">Home</Nav.Link>
-                            <Nav.Link href="/upload">Upload</Nav.Link>
+                            <Link to="/upload" className='nav-link'>Upload</Link>
+                            {this.props.currentUser ?
+                                <>
+                                    <Link className='nav-link' onClick={() => { this.props.history.push('/'); this.props.subscriptionFeed() }}>Subscriptions</Link>
+                                    <Link className='nav-link' onClick={() => { this.props.history.push('/'); this.props.likedFeed() }}>Liked</Link>
+                                    <Link className='nav-link' onClick={() => { this.props.history.push('/'); this.props.viewedFeed() }}>Viewed</Link>
+                                </>
+                                :
+                                null
+                            }
                             {!this.props.currentUser ? <Nav.Link onClick={() => this.handleShow('loginShow')}>Login</Nav.Link> : null}
                             {!this.props.currentUser ? <Nav.Link onClick={() => this.handleShow('registerShow')}>Register</Nav.Link> : null}
-        {this.props.currentUser ? <Nav.Link onClick={() => this.props.logoutUser()}>Logout, {this.props.currentUser.first_name}</Nav.Link> : null}
-                           {this.props.currentUser ?
-                            <>
-                            <Nav.Link onClick={() => { this.props.history.push('/'); this.props.subscriptionFeed() }}>Subscriptions</Nav.Link>
-                            <Nav.Link onClick={() => { this.props.history.push('/'); this.props.likedFeed() }}>Liked</Nav.Link>
-                            <Nav.Link onClick={() => { this.props.history.push('/'); this.props.viewedFeed() }}>Viewed</Nav.Link>
-                            </>
-                            :
-                            null
-                           }
+                            {this.props.currentUser ? <Link className='nav-link' to={`/channels/${this.props.currentUser.id}`}>{this.props.currentUser.first_name}'s Channel</Link> : null}
+                            {this.props.currentUser ? <Nav.Link onClick={() => this.props.logoutUser()}>Logout</Nav.Link> : null}
                         </Nav>
                         <Form inline onSubmit={(e) => this.props.searchSubmit(e, this.state.query)}>
                             <Form.Group controlId='query'>

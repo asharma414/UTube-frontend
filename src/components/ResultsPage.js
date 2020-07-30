@@ -6,9 +6,9 @@ import VideoCard from './VideoCard'
 
 class ResultsPage extends Component {
 
-    componentDidMount() {
-        this.defaultFeed()
-    }
+    // componentDidMount() {
+    //     this.defaultFeed()
+    // }
 
     defaultFeed = () => {
         this.props.fetchVideos()

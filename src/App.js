@@ -23,6 +23,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.fetchGenres()
+    this.fetchVideos()
     if (localStorage.getItem("jwt")) {
       fetch("http://localhost:3000/token", {
         method: "GET",
@@ -128,9 +129,9 @@ class App extends React.Component {
       })
       .then(res => res.json())
       .then(data => {
-        let newSub = [...this.state.currentUser.subscribees, data]
+        let newSub = [...this.state.currentUser.user_subscriptions, data]
         let currentUser = {...this.state.currentUser}
-        currentUser.subscribees = newSub
+        currentUser.user_subscriptions = newSub
         this.setState({currentUser: currentUser})
       })
    }
@@ -148,9 +149,9 @@ class App extends React.Component {
       })
       .then(res => res.json())
       .then(data => {
-        let filteredArr = [...this.state.currentUser.subscribees].filter(subscribee => subscribee.id !== data.subscribee_id)
+        let filteredArr = [...this.state.currentUser.user_subscriptions].filter(subscription => subscription.subscribee_id !== data.subscribee_id)
         let currentUser = {...this.state.currentUser}
-        currentUser.subscribees = filteredArr
+        currentUser.user_subscriptions = filteredArr
         this.setState({currentUser: currentUser})
       })
     }
@@ -158,7 +159,7 @@ class App extends React.Component {
 
   subscribed = (id) => {
     if (this.state.currentUser) {
-      return this.state.currentUser.subscribees.find(subscribee => subscribee.id === id)
+      return this.state.currentUser.user_subscriptions.find(subscription => subscription.subscribee_id === id)
     }
   }
 
@@ -210,7 +211,7 @@ class App extends React.Component {
     viewedFeed={this.viewedFeed} 
     likedFeed={this.likedFeed} />
     </Row>
-    <div style={{marginTop: '55px', marginLeft: '50px'}}>
+    <div style={{marginTop: '80px', marginLeft: '50px'}}>
       <Switch>
         <Route exact path='/' render={() => <ResultsPage loading={this.state.loading} results={this.state.videos} channelFeed={this.channelFeed} fetchVideos={this.fetchVideos} />} />
         <Route exact path='/videos/:id' render={() => <ShowPage currentUser={this.state.currentUser} subscribe={this.subscribe} subscribed={this.subscribed} unsubscribe={this.unsubscribe} />} />
