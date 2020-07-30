@@ -3,8 +3,8 @@
     display: flex;
 }
 
-.main {
-     background-color: rgb(47, 50, 56);
+body {
+   background-color: rgb(47, 50, 56);
 }
 
 #root {

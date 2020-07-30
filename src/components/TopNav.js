@@ -63,35 +63,17 @@ class TopNav extends Component {
             })
     }
 
-    loginUser = (e) => {
+    loginSubmit = async e => {
         e.preventDefault()
-        fetch("http://localhost:3000/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({
-                username: this.state.loginUsername,
-                password: this.state.loginPassword
-            })
-        }).then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.message)
-                } else {
-                    localStorage.setItem('jwt', data.token)
-                    this.props.updateUser(data.user_data)
-                    this.setState({loginUsername: '', loginPassword: ''})
-                    this.handleClose('loginShow')
-                }
-            })
+        await this.props.loginUser(this.state.loginUsername, this.state.loginPassword)
+        this.setState({loginUsername: '', loginPassword: ''})
+        this.handleClose('loginShow')
     };
 
     render() {
         return (
             <>
-                <Navbar bg="dark" expand="lg" variant='dark'>
+                <Navbar bg="dark" expand="lg" fixed='top' variant='dark'>
                     <Navbar.Brand href="/">U-Tube</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
@@ -101,6 +83,15 @@ class TopNav extends Component {
                             {!this.props.currentUser ? <Nav.Link onClick={() => this.handleShow('loginShow')}>Login</Nav.Link> : null}
                             {!this.props.currentUser ? <Nav.Link onClick={() => this.handleShow('registerShow')}>Register</Nav.Link> : null}
         {this.props.currentUser ? <Nav.Link onClick={() => this.props.logoutUser()}>Logout, {this.props.currentUser.first_name}</Nav.Link> : null}
+                           {this.props.currentUser ?
+                            <>
+                            <Nav.Link onClick={() => { this.props.history.push('/'); this.props.subscriptionFeed() }}>Subscriptions</Nav.Link>
+                            <Nav.Link onClick={() => { this.props.history.push('/'); this.props.likedFeed() }}>Liked</Nav.Link>
+                            <Nav.Link onClick={() => { this.props.history.push('/'); this.props.viewedFeed() }}>Viewed</Nav.Link>
+                            </>
+                            :
+                            null
+                           }
                         </Nav>
                         <Form inline onSubmit={(e) => this.props.searchSubmit(e, this.state.query)}>
                             <Form.Group controlId='query'>
@@ -115,7 +106,7 @@ class TopNav extends Component {
                         <Modal.Title>Login</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form onSubmit={this.loginUser}>
+                        <Form onSubmit={this.loginSubmit}>
                             <Form.Group controlId="loginUsername">
                                 <Form.Label>Username</Form.Label>
                                 <Form.Control required onChange={this.formChange} value={this.state.loginUsername} type="text" placeholder="Enter username" />

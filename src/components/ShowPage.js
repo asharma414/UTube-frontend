@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {withRouter} from 'react-router-dom'
+import {withRouter, Link} from 'react-router-dom'
 import {Row, Col, Button, Form} from 'react-bootstrap'
 import { Icon } from 'semantic-ui-react'
 import ReactPlayer from 'react-player'
@@ -183,10 +183,12 @@ class ShowPage extends Component {
     }
     }
 
+
     componentDidMount() {
         fetch(`http://localhost:3000/videos/${this.props.match.params.id}`)
             .then(res => res.json())
             .then(vid => {
+                if (this.props.currentUser) {
                 fetch(`http://localhost:3000/likes/${this.props.match.params.id}`, {
                     headers: {
                         "Authentication": localStorage.getItem("jwt"),
@@ -198,14 +200,18 @@ class ShowPage extends Component {
                     .then(data => {
                         this.setState({ createdAt: vid.created_at, viewCount: vid.view_count, comments: vid.comments, like: data, video_id: vid.id, title: vid.title, description: vid.description, clip_url: vid.clip.url, thumbnail_url: vid.thumbnail.url, poster: vid.user.username, subCount: vid.user.subscriber_count, user_id: vid.user_id, genre: vid.genre.name, likeCount: vid.like_count, dislikeCount: vid.dislike_count })
                 })
+                } else {
+                    this.setState({ createdAt: vid.created_at, viewCount: vid.view_count, comments: vid.comments, video_id: vid.id, title: vid.title, description: vid.description, clip_url: vid.clip.url, thumbnail_url: vid.thumbnail.url, poster: vid.user.username, subCount: vid.user.subscriber_count, user_id: vid.user_id, genre: vid.genre.name, likeCount: vid.like_count, dislikeCount: vid.dislike_count })
+                }
             })
     }
 
     render() {
         return (
             <>
+            <Row>
             <ReactPlayer onEnded={this.onEnded} onProgress={this.onProgress} url={this.state.clip_url} controls={true} />
-            <br />
+            </Row>
             <Row>
                 <Col lg={7}>
                     <h2>{this.state.title}</h2>
@@ -213,17 +219,25 @@ class ShowPage extends Component {
             </Row>
             <br />
             <Row>
-                <Col lg={6}>
+                <Col lg={4}>
                         {this.state.viewCount} views • {new Date(this.state.createdAt).toLocaleString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                 </Col>
                 <Col lg={2}>
                         <Row>
                         <Col>
-                        <Icon name='thumbs up outline' onClick={this.like} />
+                        {this.state.like && !this.state.like.dislike ?
+                            <Icon name='thumbs up' onClick={this.like} />
+                            :
+                            <Icon name='thumbs up outline' onClick={this.like} />
+                        }
                         <span>{this.state.likeCount}</span>
                         </Col>
                         <Col>
+                        {this.state.like && this.state.like.dislike ?
+                        <Icon name='thumbs down' onClick={this.dislike} />
+                        :
                         <Icon name='thumbs down outline' onClick={this.dislike} />
+                        }
                         <span>{this.state.dislikeCount}</span>
                          </Col>
                         </Row>
@@ -235,15 +249,15 @@ class ShowPage extends Component {
             </Row>
             <hr style={{border: '1px dotted white'}}/>
             <Row>
-                <Col>
-                    <a>{this.state.poster}</a>
+                <Col lg={5}>
+                    <Link to={`/channels/${this.state.user_id}`}>{this.state.poster}</Link>
                     <div>{this.state.subCount} Subscribers</div>
                 </Col>
-                <Col>
+                <Col lg={2}>
                     {this.props.subscribed(this.state.user_id) ? 
                     <Button onClick={() => {this.props.unsubscribe(this.state.user_id); this.setState({subCount: this.state.subCount-1})}}>Subscribed</Button> 
                     : 
-                    <Button onClick={() => {this.props.subscribe(this.state.user_id); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>}
+                    <Button variant='danger' onClick={() => {this.props.subscribe(this.state.user_id); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>}
                 </Col>
             </Row>
             <br />
@@ -251,6 +265,8 @@ class ShowPage extends Component {
             <br />
             <p>{this.state.genre}</p>
             <hr style={{ border: '1px dotted white' }} />
+            <Row>
+            <Col lg={6}>
             <div className='my-4 commentForm'>
                 <Form onSubmit={this.commentSubmit}>
                     <Form.Group controlId='commentText'>
@@ -260,13 +276,15 @@ class ShowPage extends Component {
                     <Button variant='secondary' type='submit'>Post Comment</Button>
                 </Form>
             </div>
+            </Col>
+            </Row>
             {
                 this.state.comments.map(comment =>
                     <div key={comment.id} className='mt-3 card-footer'>
                         <div className='row'>
-                            <div className='col-md-12'>
+                            <div className='col-lg-6'>
                                 <div className='row'>
-                                    <div className='col-md-9'><strong>{comment.user}</strong></div>
+                                    <div className='col-md-9'><strong><Link to={`/channels/${comment.user_id}`}>{comment.user}</Link></strong></div>
                                     <div className='text-right col-md-3'>{moment(comment.created_at).fromNow()}</div>
                                 </div>
                                 <p dangerouslySetInnerHTML={{ __html: sanitizer(comment.content) }}></p>

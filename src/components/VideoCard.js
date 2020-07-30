@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Card } from 'semantic-ui-react'
 import { Link, withRouter } from 'react-router-dom'
+import moment from 'moment';
 
 class VideoCard extends Component {
 
@@ -17,7 +18,7 @@ class VideoCard extends Component {
                 </div>
                 <Card.Content onClick={() => this.props.history.push(`/videos/${result.id}`)}>
                     <Card.Header>{result.title}</Card.Header>
-                    <span>{result.view_count} views</span>
+                    <span>{result.view_count} views • {moment(result.created_at).fromNow()}</span>
                     <Card.Description>
                         {result.description.substring(0, 25)}
                     </Card.Description>

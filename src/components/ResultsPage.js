@@ -15,20 +15,20 @@ class ResultsPage extends Component {
     }
 
     render() {
-        if (this.props.results.length > 0) {
+        if (this.props.loading) {
             return (
+                <Dimmer active>
+                    <Loader>Loading</Loader>
+                </Dimmer>
+            )
+        } else if (this.props.results.length > 0) {
+                return (
                     <Card.Group>
                         {this.props.results.map(result =>
                             <VideoCard result={result} />
                         )}
                     </Card.Group>
-            )
-        } else if (this.props.loading) {
-        return (
-            <Dimmer active>
-                <Loader>Loading</Loader>
-            </Dimmer>
-        )
+                )
         } else {
             return (
                 <div>No Results Found</div>
