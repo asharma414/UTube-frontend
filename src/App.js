@@ -1,4 +1,5 @@
 import React from 'react';
+import './App.css';
 import ShowPage from './components/ShowPage'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import TopNav from './components/TopNav'
@@ -9,7 +10,7 @@ import ChannelPage from './components/ChannelPage'
 import bootstrap from 'bootstrap/dist/css/bootstrap.min.css';
 import {Row, Col, Container} from 'react-bootstrap'
 const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
-import './App.css';
+
 
 class App extends React.Component {
 

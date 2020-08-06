@@ -3,10 +3,11 @@ import {withRouter, Link} from 'react-router-dom'
 import {Row, Col, Button, Form} from 'react-bootstrap'
 import { Icon } from 'semantic-ui-react'
 import ReactPlayer from 'react-player'
-const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
 import moment from 'moment';
 import dompurify from 'dompurify';
 const sanitizer = dompurify.sanitize;
+const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
+
 
 class ShowPage extends Component {
     constructor(props) {
