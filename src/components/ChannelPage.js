@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom'
 import {Jumbotron, Button, Container} from 'react-bootstrap'
 import { Card, Dimmer, Loader } from 'semantic-ui-react'
 import VideoCard from './VideoCard'
+const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
 
 
 class ChannelPage extends Component {
@@ -17,7 +18,7 @@ class ChannelPage extends Component {
     }
 
     getSubCount = () => {
-        fetch(`http://localhost:3000/users/${this.props.match.params.id}`)
+        fetch( url + `/users/${this.props.match.params.id}`)
         .then(res => res.json())
         .then(subCount => this.setState({subCount: subCount}))
 
@@ -43,9 +44,9 @@ class ChannelPage extends Component {
                         <Jumbotron style={{ background: 'white', color: 'black' }}>
                             <h1>Welcome to {username}'s Channel!</h1>
                             {this.props.subscribed(user_id) ?
-                                <Button onClick={() => this.props.unsubscribe(user_id)}>Subscribed</Button>
+                                <Button onClick={async () => {await this.props.unsubscribe(user_id); this.setState({subCount: this.state.subCount-1})}}>Subscribed</Button>
                                 :
-                                <Button variant='danger' onClick={() => this.props.subscribe(user_id)}>Subscribe</Button>}
+                                <Button variant='danger' onClick={async () => {await this.props.subscribe(user_id); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>}
                             <span>   {this.state.subCount} subscribers</span>
                         </Jumbotron>
                         </Container>

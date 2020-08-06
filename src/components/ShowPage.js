@@ -3,6 +3,7 @@ import {withRouter, Link} from 'react-router-dom'
 import {Row, Col, Button, Form} from 'react-bootstrap'
 import { Icon } from 'semantic-ui-react'
 import ReactPlayer from 'react-player'
+const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
 import moment from 'moment';
 import dompurify from 'dompurify';
 const sanitizer = dompurify.sanitize;
@@ -39,7 +40,7 @@ class ShowPage extends Component {
     like = () => {
         if (this.props.currentUser) {
             if (!this.state.like) {
-            fetch('http://localhost:3000/likes', {
+            fetch( url + '/likes', {
                 method: 'POST',
                 headers: {
                     "Authentication": localStorage.getItem("jwt"),
@@ -53,7 +54,7 @@ class ShowPage extends Component {
             }).then(res => res.json())
             .then(data =>this.setState({like: data, likeCount: this.state.likeCount + 1}))
         } else if (this.state.like.dislike === false) {
-            fetch(`http://localhost:3000/likes/${this.state.like.id}`, {
+            fetch( url + `/likes/${this.state.like.id}`, {
                 method: 'DELETE',
                 headers: {
                     "Authentication": localStorage.getItem("jwt"),
@@ -66,7 +67,7 @@ class ShowPage extends Component {
                 }
             })
         } else {
-            fetch(`http://localhost:3000/likes/${this.state.like.id}`, {
+            fetch( url + `/likes/${this.state.like.id}`, {
                 method: 'PATCH',
                 headers: {
                     "Authentication": localStorage.getItem("jwt"),
@@ -88,7 +89,7 @@ class ShowPage extends Component {
         if (!this.state.played) {
             if (played >= 0.5 && this.state.viewed === false) {
                 if (this.props.currentUser) {
-                    fetch('http://localhost:3000/views', {
+                    fetch( url + '/views', {
                         method: 'POST',
                         headers: {
                             'Content-type': 'application/json',
@@ -102,7 +103,7 @@ class ShowPage extends Component {
                     .then(res => res.json())
                     .then(this.setState({viewed: true, viewCount: this.state.viewCount + 1}))
                 } else {
-                    fetch('http://localhost:3000/views', {
+                    fetch( url + '/views', {
                         method: 'POST',
                         headers: {
                             'Content-type': 'application/json',
@@ -122,7 +123,7 @@ class ShowPage extends Component {
     dislike = () => {
         if (this.props.currentUser) {
             if (!this.state.like) {
-                fetch('http://localhost:3000/likes', {
+                fetch( url + '/likes', {
                     method: 'POST',
                     headers: {
                         "Authentication": localStorage.getItem("jwt"),
@@ -136,7 +137,7 @@ class ShowPage extends Component {
                 }).then(res => res.json())
                     .then(data => this.setState({ like: data, dislikeCount: this.state.dislikeCount + 1 }))
             } else if (this.state.like.dislike === true) {
-                fetch(`http://localhost:3000/likes/${this.state.like.id}`, {
+                fetch( url + `/likes/${this.state.like.id}`, {
                     method: 'DELETE',
                     headers: {
                         "Authentication": localStorage.getItem("jwt"),
@@ -149,7 +150,7 @@ class ShowPage extends Component {
                     }
                 })
             } else {
-                fetch(`http://localhost:3000/likes/${this.state.like.id}`, {
+                fetch( url + `/likes/${this.state.like.id}`, {
                     method: 'PATCH',
                     headers: {
                         "Authentication": localStorage.getItem("jwt"),
@@ -166,7 +167,7 @@ class ShowPage extends Component {
     commentSubmit = (e) => {
         e.preventDefault()
         if (this.props.currentUser) {
-        fetch('http://localhost:3000/comments', {
+        fetch( url + '/comments', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -185,11 +186,11 @@ class ShowPage extends Component {
 
 
     componentDidMount() {
-        fetch(`http://localhost:3000/videos/${this.props.match.params.id}`)
+        fetch( url + `/videos/${this.props.match.params.id}`)
             .then(res => res.json())
             .then(vid => {
                 if (this.props.currentUser) {
-                fetch(`http://localhost:3000/likes/${this.props.match.params.id}`, {
+                fetch( url + `/likes/${this.props.match.params.id}`, {
                     headers: {
                         "Authentication": localStorage.getItem("jwt"),
                         'Content-type': 'application/json',

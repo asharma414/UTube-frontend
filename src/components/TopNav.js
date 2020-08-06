@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, Form, FormControl, Button, Modal } from 'react-bootstrap'
 import { withRouter, Link } from 'react-router-dom'
+const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
 
 
 class TopNav extends Component {
@@ -34,7 +35,7 @@ class TopNav extends Component {
 
     registerUser = (e) => {
         e.preventDefault()
-        fetch("http://localhost:3000/users", {
+        fetch( url + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

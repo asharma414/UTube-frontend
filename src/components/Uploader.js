@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Button, ProgressBar } from 'react-bootstrap'
 import axios from 'axios'
+const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
 
 
 export default class Uploader extends Component {
@@ -39,7 +40,7 @@ export default class Uploader extends Component {
         formData.append('video[genre_id', this.state.genre)
         formData.append('video[clip]', this.state.clip)
         formData.append('video[thumbnail]', this.state.thumbnail)
-        await axios.post('http://localhost:3000/videos', formData, {
+        await axios.post(url + '/videos', formData, {
             headers: {
                 'Content-type': 'multipart/form-data'
             },

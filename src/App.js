@@ -8,6 +8,7 @@ import ResultsPage from './components/ResultsPage'
 import ChannelPage from './components/ChannelPage'
 import bootstrap from 'bootstrap/dist/css/bootstrap.min.css';
 import {Row, Col, Container} from 'react-bootstrap'
+const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
 import './App.css';
 
 class App extends React.Component {
@@ -25,7 +26,7 @@ class App extends React.Component {
     this.fetchGenres()
     this.fetchVideos()
     if (localStorage.getItem("jwt")) {
-      fetch("http://localhost:3000/token", {
+      fetch( url + "/token", {
         method: "GET",
         headers: {
           "Authentication": localStorage.getItem("jwt")
@@ -43,13 +44,13 @@ class App extends React.Component {
 
   fetchVideos = () => {
     this.setState({loading: true})
-    fetch('http://localhost:3000/videos')
+    fetch( url + '/videos')
     .then(res => res.json())
     .then(data => this.setState({videos: data, loading: false}))
   }
 
   fetchGenres = () => {
-    fetch('http://localhost:3000/genres')
+    fetch( url + '/genres')
       .then(res => res.json())
       .then(genres => this.setState({ genres: genres }))
   }
@@ -57,7 +58,7 @@ class App extends React.Component {
   viewedFeed = () => {
     if (this.state.currentUser) {
       this.setState({loading: true})
-      fetch("http://localhost:3000/feed/viewed", {
+      fetch( url + "/feed/viewed", {
         method: "GET",
         headers: {
           "Authentication": localStorage.getItem("jwt")
@@ -71,7 +72,7 @@ class App extends React.Component {
   subscriptionFeed = () => {
     if (this.state.currentUser) {
       this.setState({loading: true})
-      fetch("http://localhost:3000/feed/subscriptions", {
+      fetch( url + "/feed/subscriptions", {
         method: "GET",
         headers: {
           "Authentication": localStorage.getItem("jwt")
@@ -85,14 +86,14 @@ class App extends React.Component {
   searchResults = (e, term) => {
     e.preventDefault()
     this.setState({loading: true})
-    fetch(`http://localhost:3000/videos?query=${term}`)
+    fetch( url + `/videos?query=${term}`)
     .then(res => res.json())
     .then(videos => this.setState({videos: videos, loading: false}))
   }
 
   channelFeed = id => {
     this.setState({loading: true})
-    fetch(`http://localhost:3000/feed/${id}`, {
+    fetch( url + `/feed/${id}`, {
       method: 'GET',
       headers: {
         "Authentication": localStorage.getItem("jwt")
@@ -105,7 +106,7 @@ class App extends React.Component {
   likedFeed = () => {
     if (this.state.currentUser) {
       this.setState({loading: true})
-      fetch("http://localhost:3000/feed/liked", {
+      fetch( url + "/feed/liked", {
         method: "GET",
         headers: {
           "Authentication": localStorage.getItem("jwt")
@@ -118,7 +119,7 @@ class App extends React.Component {
 
   subscribe = (id) => {
     if (this.state.currentUser) {
-      fetch('http://localhost:3000/subscriptions', {
+      fetch( url + '/subscriptions', {
         method: 'POST',
         headers: {
           "Authentication": localStorage.getItem("jwt"),
@@ -139,7 +140,7 @@ class App extends React.Component {
 
   unsubscribe = (id) => {
     if (this.state.currentUser) {
-      fetch(`http://localhost:3000/subscriptions/${id}`, {
+      fetch( url + `/subscriptions/${id}`, {
         method: 'DELETE',
         headers: {
           "Authentication": localStorage.getItem("jwt"),
@@ -170,7 +171,7 @@ class App extends React.Component {
   }
 
   loginUser = (username, password) => {
-    fetch("http://localhost:3000/login", {
+    fetch( url + "/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
