@@ -35,13 +35,13 @@ export default class Uploader extends Component {
         const formData = new FormData()
         formData.append('video[title]', this.state.title)
         formData.append('video[description]', this.state.description)
-        formData.append('video[user_id]', this.props.currentUser.id)
         formData.append('video[public]', !this.state.private)
         formData.append('video[genre_id', this.state.genre)
         formData.append('video[clip]', this.state.clip)
         formData.append('video[thumbnail]', this.state.thumbnail)
         await axios.post(url + '/videos', formData, {
             headers: {
+                "Authentication": localStorage.getItem("jwt"),
                 'Content-type': 'multipart/form-data'
             },
             onUploadProgress: progressEvent => {
@@ -54,9 +54,9 @@ export default class Uploader extends Component {
 
     render() {
         if (!this.props.currentUser) {
-            return (
-                <div>Please Login To Upload Videos!</div>
-            )
+            return <div>Please Login To Upload Videos!</div>
+        } else if (!this.props.currentUser.uploader) {
+            return <div>To prevent abuse of upload functionality, you cannot upload by default. Please email the administrator at <a href='mailto:u2beapp@gmail.com'>u2beapp@gmail.com</a> to request permission.</div>
         } else {
         return (
             <div className='container'>

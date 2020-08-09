@@ -21,10 +21,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "startDev": "PORT=3001 react-scripts start",
     "server": "cd ../utube-backend && rails s",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "dev": "concurrently \"npm run server\" \"npm run start\"",
+    "dev": "concurrently \"npm run server\" \"npm run startDev\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
