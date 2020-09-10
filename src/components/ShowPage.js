@@ -274,7 +274,7 @@ class ShowPage extends Component {
                     <div>{this.state.subCount} Subscribers</div>
                 </Col>
                 <Col lg={2}>
-                    {this.props.currentUser && this.props.currentUser.username !== this.state.poster ? this.props.subscribed(this.state.user_id) ? 
+                    {this.props.currentUser !== null && this.props.currentUser.username !== this.state.poster ? this.props.subscribed(this.state.user_id) ? 
                     <Button onClick={() => {this.props.unsubscribe(this.state.user_id); this.setState({subCount: this.state.subCount-1})}}>Subscribed</Button> 
                     : 
                     <Button variant='danger' onClick={() => {this.props.subscribe(this.state.user_id); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>
