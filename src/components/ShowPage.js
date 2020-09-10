@@ -21,7 +21,7 @@ class ShowPage extends Component {
             video_id: null,
             title: null,
             description: null,
-            poster: null,
+            poster: false,
             user_id: null,
             genre: null,
             likeCount: null,
