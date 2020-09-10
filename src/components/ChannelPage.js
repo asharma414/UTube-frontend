@@ -44,7 +44,7 @@ class ChannelPage extends Component {
                         <Container>
                         <Jumbotron style={{ background: 'white', color: 'black' }}>
                             <h1>Welcome to {username}'s Channel!</h1>
-                            {!this.props.currentUser || this.props.currentUser.id === parseInt(this.state.channelId) ? 
+                            {!this.props.currentUser || (this.state.channelId && this.props.currentUser.id === parseInt(this.state.channelId)) ? 
                                 null 
                                 :
                                 this.props.subscribed(user_id) ?

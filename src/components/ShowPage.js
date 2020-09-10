@@ -274,7 +274,7 @@ class ShowPage extends Component {
                     <div>{this.state.subCount} Subscribers</div>
                 </Col>
                 <Col lg={2}>
-                    {!this.props.currentUser || this.props.currentUser.username === this.state.poster ? 
+                    {!this.props.currentUser || (this.props.poster && this.props.currentUser.username === this.state.poster) ? 
                         null
                     :
                     this.props.subscribed(this.state.user_id) ?
