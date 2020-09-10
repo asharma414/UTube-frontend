@@ -21,7 +21,6 @@ class ChannelPage extends Component {
         fetch( url + `/users/${this.props.match.params.id}`)
         .then(res => res.json())
         .then(subCount => this.setState({subCount: subCount}))
-
     }
 
     getChannelVids = () => {
@@ -43,10 +42,12 @@ class ChannelPage extends Component {
                         <Container>
                         <Jumbotron style={{ background: 'white', color: 'black' }}>
                             <h1>Welcome to {username}'s Channel!</h1>
-                            {this.props.subscribed(user_id) ?
+                            {this.props.currentUser && this.props.currentUser.id !== parseInt(this.props.match.params.id) ? this.props.subscribed(user_id) ?
                                 <Button onClick={async () => {await this.props.unsubscribe(user_id); this.setState({subCount: this.state.subCount-1})}}>Subscribed</Button>
                                 :
-                                <Button variant='danger' onClick={async () => {await this.props.subscribe(user_id); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>}
+                                <Button variant='danger' onClick={async () => {await this.props.subscribe(user_id); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>
+                                :
+                                null}
                             <span>   {this.state.subCount} subscribers</span>
                         </Jumbotron>
                         </Container>
