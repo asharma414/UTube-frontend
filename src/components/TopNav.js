@@ -94,11 +94,11 @@ class TopNav extends Component {
                             {this.props.currentUser ? <Link className='nav-link' to={`/channels/${this.props.currentUser.id}`}>{this.props.currentUser.first_name}'s Channel</Link> : null}
                             {this.props.currentUser ? <Nav.Link onClick={() => this.props.logoutUser()}>Logout</Nav.Link> : null}
                         </Nav>
-                        <Form inline onSubmit={(e) => this.props.searchSubmit(e, this.state.query)}>
+                        <Form inline onSubmit={(e) => {this.props.searchSubmit(e, this.state.query); this.props.history.push('/')}}>
                             <Form.Group controlId='query'>
                                 <FormControl value={this.state.query} onChange={this.formChange} type="text" placeholder="Search" className="mr-sm-2" />
-                                <Button variant="outline-success">Search</Button>
                             </Form.Group>
+                            <Button type="submit" variant="outline-success">Search</Button>
                         </Form>
                     </Navbar.Collapse>
                 </Navbar>
