@@ -97,7 +97,7 @@ class App extends React.Component {
     fetch( url + `/feed/${id}`, {
       method: 'GET',
       headers: {
-        "Authentication": localStorage.getItem("jwt")
+        "Authentication": localStorage.getItem("jwt") //do I need this?
       }
     })
     .then(res => res.json())

@@ -10,7 +10,9 @@ class ChannelPage extends Component {
 
     state = {
         subCount: null,
-        channelId: false
+        username: null,
+        userId: null
+        
     }
 
     componentDidMount() {
@@ -21,7 +23,7 @@ class ChannelPage extends Component {
     getSubCount = () => {
         fetch( url + `/users/${this.props.match.params.id}`)
         .then(res => res.json())
-        .then(subCount => this.setState({subCount: subCount}))
+        .then(user => this.setState({subCount: user.subscriber_count, username: user.username, userId: user.id}))
     }
 
     getChannelVids = () => {
@@ -29,8 +31,6 @@ class ChannelPage extends Component {
     }
 
     render() {
-        const username = ((this.props.results[0] || {}).user || {}).username;
-        const user_id  = (this.props.results[0] || {}).user_id
         if (this.props.loading) {
             return (
                 <Dimmer active>
@@ -42,11 +42,11 @@ class ChannelPage extends Component {
                     <div>
                         <Container>
                         <Jumbotron style={{ background: 'white', color: 'black' }}>
-                            <h1>Welcome to {username}'s Channel!</h1>
-                            {this.props.currentUser && this.props.currentUser.id !== parseInt(this.props.match.params.id) ? this.props.subscribed(user_id) ?
-                                <Button onClick={async () => {await this.props.unsubscribe(user_id); this.setState({subCount: this.state.subCount-1})}}>Subscribed</Button>
+                            <h1>Welcome to {this.state.username}'s Channel!</h1>
+                            {this.props.currentUser && this.props.currentUser.id !== parseInt(this.props.match.params.id) ? this.props.subscribed(this.state.userId) ?
+                                <Button onClick={async () => {await this.props.unsubscribe(this.state.userId); this.setState({subCount: this.state.subCount-1})}}>Subscribed</Button>
                                 :
-                                <Button variant='danger' onClick={async () => {await this.props.subscribe(user_id); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>
+                                <Button variant='danger' onClick={async () => {await this.props.subscribe(this.state.userId); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>
                                 :
                                 null}
                             <span>   {this.state.subCount} subscribers</span>
@@ -63,11 +63,11 @@ class ChannelPage extends Component {
             return (
                 <Container>
                 <Jumbotron style={{ background: 'white', color: 'black' }}>
-                    <h1>Welcome to {username}'s Channel!</h1>
-                    {this.props.currentUser && this.props.currentUser.id !== parseInt(this.props.match.params.id) ? this.props.subscribed(user_id) ?
-                        <Button onClick={async () => {await this.props.unsubscribe(user_id); this.setState({subCount: this.state.subCount-1})}}>Subscribed</Button>
+                    <h1>Welcome to {this.state.username}'s Channel!</h1>
+                    {this.props.currentUser && this.props.currentUser.id !== parseInt(this.props.match.params.id) ? this.props.subscribed(this.state.userId) ?
+                        <Button onClick={async () => {await this.props.unsubscribe(this.state.userId); this.setState({subCount: this.state.subCount-1})}}>Subscribed</Button>
                         :
-                        <Button variant='danger' onClick={async () => {await this.props.subscribe(user_id); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>
+                        <Button variant='danger' onClick={async () => {await this.props.subscribe(this.state.userId); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>
                         :
                         null}
                     <span>   {this.state.subCount} subscribers</span>
