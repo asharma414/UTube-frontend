@@ -61,7 +61,18 @@ class ChannelPage extends Component {
                 )   
         } else {
             return (
-                <div>No Results Found</div>
+                <Container>
+                <Jumbotron style={{ background: 'white', color: 'black' }}>
+                    <h1>Welcome to {username}'s Channel!</h1>
+                    {this.props.currentUser && this.props.currentUser.id !== parseInt(this.props.match.params.id) ? this.props.subscribed(user_id) ?
+                        <Button onClick={async () => {await this.props.unsubscribe(user_id); this.setState({subCount: this.state.subCount-1})}}>Subscribed</Button>
+                        :
+                        <Button variant='danger' onClick={async () => {await this.props.subscribe(user_id); this.setState({subCount: this.state.subCount+1})}}>Subscribe</Button>
+                        :
+                        null}
+                    <span>   {this.state.subCount} subscribers</span>
+                </Jumbotron>
+                </Container>
             )
         }
     }
