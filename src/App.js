@@ -218,7 +218,7 @@ class App extends React.Component {
         <Route exact path='/' render={() => <ResultsPage loading={this.state.loading} results={this.state.videos} channelFeed={this.channelFeed} fetchVideos={this.fetchVideos} />} />
         <Route exact path='/videos/:id' render={() => <ShowPage currentUser={this.state.currentUser} subscribe={this.subscribe} subscribed={this.subscribed} unsubscribe={this.unsubscribe} />} />
         <Route exact path='/upload' render={() => <Uploader currentUser={this.state.currentUser} genres={this.state.genres} />} />
-        <Route exact path='/channels/:id' render={() => <ChannelPage loading={this.state.loading} currentUser={this.state.currentUser} results={this.state.videos} channelFeed={this.channelFeed} subscribe={this.subscribe} subscribed={this.subscribed} unsubscribe={this.unsubscribe} />} />
+        <Route exact path='/channels/:id' render={(props) => <ChannelPage key={props.match.params.id} loading={this.state.loading}  currentUser={this.state.currentUser} results={this.state.videos} channelFeed={this.channelFeed} subscribe={this.subscribe} subscribed={this.subscribed} unsubscribe={this.unsubscribe} />} />
         <Route render={() => <Page404 />} />
       </Switch>
     </div>

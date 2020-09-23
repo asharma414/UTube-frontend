@@ -20,6 +20,7 @@ class ChannelPage extends Component {
         this.getSubCount()
     }
 
+
     getSubCount = () => {
         fetch( url + `/users/${this.props.match.params.id}`)
         .then(res => res.json())
@@ -40,7 +41,7 @@ class ChannelPage extends Component {
         } else if (this.props.results.length > 0) {
                 return (
                     <div>
-                        <Container>
+                        <Container key={this.props.match.params.id}>
                         <Jumbotron style={{ background: 'white', color: 'black' }}>
                             <h1>Welcome to {this.state.username}'s Channel!</h1>
                             {this.props.currentUser && this.props.currentUser.id !== parseInt(this.props.match.params.id) ? this.props.subscribed(this.state.userId) ?
